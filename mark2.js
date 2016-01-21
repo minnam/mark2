@@ -1,11 +1,7 @@
 /**
-*	Mark2.js
-*
-* 
-*
-*	@class
+*	@author  Min Nam
 */
-var Mark2 = function(){
+var Mark2 = function() {
 
 	var Mark2 = {
 
@@ -28,7 +24,7 @@ var Mark2 = function(){
 		 *
 		 */
 		
-		new : function( param ){
+		new : function( param ) {
 
 			return new VariableSequencer( param );
 
@@ -49,7 +45,7 @@ var Mark2 = function(){
 	*	@param {function} param.execute - Function that needs to be executed by Seqeuncer.
 	*	@memberof Mark2	
 	*/
-	var Note = function( param ){
+	var Note = function( param ) {
 
 		var Note = {},
 		_index,
@@ -60,7 +56,7 @@ var Mark2 = function(){
 		_velocity,
 		_fps;
 		
-		Note.init = function(){
+		Note.init = function() {
 
 			this.index( param.index );
 			this.start( param.start ? param.start : 0 );			
@@ -74,9 +70,9 @@ var Mark2 = function(){
 
 		}		
 
-		Note.index = function( a ){
+		Note.index = function( a ) {
 
-			if( a === undefined ){
+			if( a === undefined ) {
 
 				return _index;
 
@@ -90,7 +86,7 @@ var Mark2 = function(){
 		 * Reset position associated with execute function.
 		 * @memberof! Mark2.Note#
 		 */
-		Note.reset = function(){
+		Note.reset = function() {
 
 			this.start( _start );
 
@@ -100,9 +96,9 @@ var Mark2 = function(){
 		 * @return {int} Start position associated with execute function.
 		 * @memberof! Mark2.Note#
 		 */
-		Note.start = function( a ){
+		Note.start = function( a ) {
 
-			if( a === undefined ){
+			if( a === undefined ) {
 
 				return _start;
 
@@ -119,9 +115,9 @@ var Mark2 = function(){
 		 * @param  {int} position
 		 * @memberof! Mark2.Note#
 		 */
-		Note.position = function( a ){
+		Note.position = function( a ) {
 
-			if( a === undefined ){
+			if( a === undefined ) {
 
 				return _position;
 
@@ -132,9 +128,9 @@ var Mark2 = function(){
 		}
 
 		
-		Note.end = function( newEnd ){
+		Note.end = function( newEnd ) {
 
-			if( newEnd === undefined ){
+			if( newEnd === undefined ) {
 
 				return _end;
 
@@ -146,9 +142,9 @@ var Mark2 = function(){
 
 		}		
 
-		Note.fps = function( a ){
+		Note.fps = function( a ) {
 
-			if( a === undefined ){
+			if( a === undefined ) {
 
 				return _fps;
 
@@ -158,9 +154,9 @@ var Mark2 = function(){
 
 		}
 
-		Note.velocity = function( a ){
+		Note.velocity = function( a ) {
 
-			if( a === undefined ){
+			if( a === undefined ) {
 
 				return _velocity
 
@@ -170,11 +166,11 @@ var Mark2 = function(){
 
 		}
 
-		Note.proceed = function(){}
+		Note.proceed = function() {}
 
-		Note.setProceed = function(){
+		Note.setProceed = function() {
 
-			if( _end < _start ){
+			if( _end < _start ) {
 
 				this.proceed = this.decrement;
 
@@ -186,23 +182,23 @@ var Mark2 = function(){
 
 		}
 		
-		Note.increment = function(){
+		Note.increment = function() {
 
 			_position += _velocity;
 
 		}
 
 		
-		Note.decrement = function( a ){
+		Note.decrement = function( a ) {
 
 			_position -= _velocity;
 
 		}
 
 		
-		Note.execute = function( newExecute ){
+		Note.execute = function( newExecute ) {
 
-			if( newExecute === undefined ){
+			if( newExecute === undefined ) {
 
 				 
         			_execute( _position );
@@ -215,7 +211,7 @@ var Mark2 = function(){
 				
 		}
 
-		Note.logEmpty = function(){
+		Note.logEmpty = function() {
 
 			console.log( "Empty Note " + _index + " is executing.");
 
@@ -232,7 +228,7 @@ var Mark2 = function(){
 	*	@memberof Mark2
 	*	@constructor
 	*/
-	var Sequencer = function( param ){
+	var Sequencer = function( param ) {
 
 		var Sequencer = {},
 		_seq       		   = {},
@@ -245,15 +241,15 @@ var Mark2 = function(){
 		_tick,
 		_bpm;
 		
-		Sequencer.init = function(){
+		Sequencer.init = function() {
 
-			if( param.loop === undefined ){
+			if( param.loop === undefined ) {
 
 				this.loop( false );
 
 			}
 
-			if( param.bpm === undefined ){
+			if( param.bpm === undefined ) {
 
 				this.bpm( 120 );
 
@@ -263,7 +259,7 @@ var Mark2 = function(){
 
 			}
 
-			Sequencer.defaultExecution(function(){});
+			Sequencer.defaultExecution(function() {});
 			
 
 			return Sequencer;
@@ -271,7 +267,7 @@ var Mark2 = function(){
 		}
 
 		
-		Sequencer.seq = function(){
+		Sequencer.seq = function() {
 
 			return seq;
 
@@ -281,7 +277,7 @@ var Mark2 = function(){
 
 			var length = 0, key;
 
-			for( key in _seq ){
+			for( key in _seq ) {
 						
 				length++;
 
@@ -292,10 +288,10 @@ var Mark2 = function(){
 		};
 
 		
-		Sequencer.reset = function(){
+		Sequencer.reset = function() {
 
 		
-			for( var key in _seq ){
+			for( var key in _seq ) {
 						
 				_seq[ key ].reset();
 
@@ -304,25 +300,25 @@ var Mark2 = function(){
 		}
 
 		
-		Sequencer.length = function(){
+		Sequencer.length = function() {
 
 			return this.iterate()[ "length" ];
 
 		}
 
 		
-		Sequencer.lastElement = function(){
+		Sequencer.lastElement = function() {
 
 			return this.iterate()[ "key" ];
 			
 		}
 
 		
-		Sequencer.add = function( param ){
+		Sequencer.add = function( param ) {
 
 			var length = this.length();
 
-			if( param === undefined ){ 
+			if( param === undefined ) { 
 
 				_seq[ length ] = new Note({ index: length });
 
@@ -330,10 +326,10 @@ var Mark2 = function(){
 
 			}
 
-			if( param.index === undefined ){
+			if( param.index === undefined ) {
 			 	
 
-				if( length < 1 ){
+				if( length < 1 ) {
 
 					_seq[ 0 ] = new Note( param );
 
@@ -352,15 +348,15 @@ var Mark2 = function(){
 
 		}
 
-		Sequencer.get = function( index ){
+		Sequencer.get = function( index ) {
 
 			return _seq[ index ];
 
 		}
 
-		Sequencer.delete = function( index ){
+		Sequencer.delete = function( index ) {
 
-			if( index === undefined ){
+			if( index === undefined ) {
 				
 				_seq[ this.lastElement() ] = undefined;
 
@@ -372,9 +368,9 @@ var Mark2 = function(){
 
 		}
 
-		Sequencer.bpm = function( newBpm ){
+		Sequencer.bpm = function( newBpm ) {
 
-			if( _state ){
+			if( _state ) {
 
 				this.pause();
 				_bpm = 60000 / newBpm;
@@ -389,9 +385,9 @@ var Mark2 = function(){
 
 		}
 
-		Sequencer.loop = function( newLoop ){
+		Sequencer.loop = function( newLoop ) {
 
-			if( newLoop === undefined ){
+			if( newLoop === undefined ) {
 
 				return _loop;
 
@@ -401,19 +397,19 @@ var Mark2 = function(){
 
 		}
 
-		Sequencer.loopStart = function( newLoopStart ){
+		Sequencer.loopStart = function( newLoopStart ) {
 
 			_loopStart = newLoopStart;
 			
 		}
 
-		Sequencer.roll = function( newRoll ){
+		Sequencer.roll = function( newRoll ) {
 
 			_roll = newRoll;
 			
 		}
 
-		Sequencer.isRolling = function(){
+		Sequencer.isRolling = function() {
 
 			return _roll;
 
@@ -421,9 +417,9 @@ var Mark2 = function(){
 
 		Sequencer.exeIndex = 0;	
 
-		Sequencer.defaultExecution = function( newDefaultExecution ){
+		Sequencer.defaultExecution = function( newDefaultExecution ) {
 
-			if( newDefaultExecution === undefined ){
+			if( newDefaultExecution === undefined ) {
 
 				_defaultExecution();
 
@@ -436,14 +432,14 @@ var Mark2 = function(){
 
 		}		
 
-		Sequencer.pause = function(){
+		Sequencer.pause = function() {
 
 			_state = false;
 			clearInterval( _tick );
 
 		}
 
-		Sequencer.stop = function(){
+		Sequencer.stop = function() {
 
 			this.pause();
 			_playhead = 0;
@@ -459,31 +455,31 @@ var Mark2 = function(){
 	 * @constructor
 	 * @memberOf Mark2
 	 */
-	var VariableSequencer = function( param ){
+	var VariableSequencer = function( param ) {
 
 		var VariableSequencer = new Sequencer( param );
 
-		VariableSequencer.init = function(){
+		VariableSequencer.init = function() {
 			
 			return VariableSequencer;
 
 		}
 
-		VariableSequencer.play = function( ){
+		VariableSequencer.play = function( ) {
 
 			var id, self = this;		
-			execution = function(){
+			execution = function() {
 		
 				var Note = self.get( self.exeIndex );
 
-				if( Note.position() < Note.end() ){
+				if( Note.position() < Note.end() ) {
 
 					setTimeout(function() {
     			
 			
 						self.defaultExecution();
 
-						for( var i = 0; i < self.exeIndex; i++ ){
+						for( var i = 0; i < self.exeIndex; i++ ) {
 
 							self.get( i ).execute();															
 
@@ -502,14 +498,14 @@ var Mark2 = function(){
 
 					window.cancelAnimationFrame( id );							
 					
-					if( self.get( self.exeIndex + 1 ) != undefined ){
+					if( self.get( self.exeIndex + 1 ) != undefined ) {
 
 							self.exeIndex++;
 							self.play();
 
 					}else{
 
-						if( self.loop() ){
+						if( self.loop() ) {
 
 							self.reset();
 							self.exeIndex = 0;
@@ -537,31 +533,31 @@ var Mark2 = function(){
 	 * @constructor
 	 * @memberOf Mark2
 	 */
-	var QuantizedSequencer = function(){
+	var QuantizedSequencer = function() {
 
 		var FixedSequencer = new Sequencer();
 
-		FixedSequencer.init = function(){
+		FixedSequencer.init = function() {
 
 			return FixedSequencer;
 
 		}
 
-		FixedSequencer.play = function(){
+		FixedSequencer.play = function() {
 
 			_state = true;
 
-			_tick = setInterval( function(){
+			_tick = setInterval( function() {
 
 				_seq[ ( _loopStart + _playhead )  % this.length() ].execute( "hello" + _playhead );
 
-				if( ! this.isRolling() ){
+				if( ! this.isRolling() ) {
 
 					_playhead++;
 
 				}
 
-				if( !_loop ){
+				if( !_loop ) {
 
 					Sequencer.pause();
 
