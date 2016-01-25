@@ -1,5 +1,6 @@
 /**
-*	@author  Min Nam
+*	@author  Min Nam https://github.com/MINNAM/Mark2
+*	@namespace
 */
 var Mark2 = function() {
 
@@ -7,42 +8,71 @@ var Mark2 = function() {
 
 		/**
 		 * Create a new Sequencer
-		 *
-		 * @example
-		 * // Creating tempo based Sequencer
-		 * var seq1 = Mark2.new({ type: "tempo" });
-		 * 
-		 * @example
-		 * var seq1 = Mark2.new({ type: "finish", bpm: 120, loop: true });
-		 *
 		 * 
 		 * @param {string} type
 		 * @param {int} bpm
 		 * @param {boolean} loop
 		 * @return {Mark2.Sequencer}
-		 * @memberOf Mark2
+		 * @memberOf Mark2#
 		 *
-		 */
-		
+		 */		
 		new : function( param ) {
 
 			return new VariableSequencer( param );
+
+		},
+
+		/**
+		 * Play all Sequencer
+		 * @memberof Mark2#
+		 */
+		play: function() {},
+
+		/**
+		 * Pause all Sequencer
+		 * @memberof! Mark2#
+		 */
+		pause: function() {},
+
+		easing : {
+
+			new : function( a, b ){
+
+				this[ a ] = b;
+
+			},
+
+			linear    : function( a ) { return a  },
+			quadratic : function( a ) { return a * a },
+			cubic     : function( a ) { return a * a * a },
+			quintic   : function( a ) { return a * a * a * a }			
 
 		}
 
 	};
 
+
+	var vendors = [ 'ms', 'moz', 'webkit', 'o' ];
+
+    for( var i = 0; i < vendors.length && !window.requestAnimationFrame; ++i ){
+
+        window.requestAnimationFrame = window[ vendors[ x ] + 'RequestAnimationFrame' ];
+        window.cancelAnimationFrame  = window[ vendors[ x ] + 'CancelAnimationFrame' ] || window[ vendors[ x ] + 'CancelRequestAnimationFrame' ];
+    }
+
 	/**
-	*	Note object is an individual node for Sequencerr. When Note is executed by Sequencerr, 
+	*	Note object is an individual node for Sequencer. When Note is executed by Sequencer, 
 	*	Note's postion will be incremented or decremented while executing it's callback function 
 	*	untill it reaches to end. 
 	*
 	* 	@constructor
-	*	@param {int} param.start - Start position associated with callback function for Note.
-	*	@param {int} param.end  - End position associated with callback function for Note.
-	*	@param {int} param.fps  - 
-	*	@param {int} param.velocity - 
-	*	@param {function} param.execute - Function that needs to be executed by Seqeuncer.
+	* 	@param param
+	* 	@param {int} param.index
+	*	@param {int} param.start
+	*	@param {int} param.end
+	*	@param {int} param.fps
+	*	@param {int} param.velocity
+	*	@param {execute} param.execute
 	*	@memberof Mark2	
 	*/
 	var Note = function( param ) {
@@ -54,22 +84,29 @@ var Mark2 = function() {
 		_end,
 		_execute,
 		_velocity,
-		_fps;
+		_fps,
+		_ease;
 		
 		Note.init = function() {
 
 			this.index( param.index );
 			this.start( param.start ? param.start : 0 );			
 			this.end( param.end ? param.end : 50 );			
-			this.fps( param.fps ? param.fps : 24 );
-			this.velocity( param.velocity ? param.velocity : 2 );
+			this.fps( param.fps ? param.fps : 20 );
+			this.velocity( param.velocity ? param.velocity : 1 );
 			this.execute( param.execute ? param.execute : this.logEmpty );
+			this.ease( param.ease ? param.ease : 'quintic' );
 			this.setProceed();
 			
 			return Note;
 
 		}		
 
+		/**
+		 * @param  {int} index
+		 * @return {int}
+		 * @memberof! Mark2.Note#
+		 */
 		Note.index = function( a ) {
 
 			if( a === undefined ) {
@@ -127,7 +164,11 @@ var Mark2 = function() {
 
 		}
 
-		
+		/**	
+		 * @default 0
+		 * @param  {int} end
+		 * @memberof! Mark2.Note#
+		 */		
 		Note.end = function( newEnd ) {
 
 			if( newEnd === undefined ) {
@@ -158,11 +199,23 @@ var Mark2 = function() {
 
 			if( a === undefined ) {
 
-				return _velocity
+				return _velocity;
 
 			}
 
 			_velocity = a;
+
+		}
+
+		Note.ease = function( a ) {
+
+			if( a === undefined ) {
+
+				return _ease;
+
+			}
+
+			_ease = a;
 
 		}
 
@@ -186,6 +239,8 @@ var Mark2 = function() {
 
 			_position += _velocity;
 
+			// console.log(  );
+
 		}
 
 		
@@ -199,9 +254,8 @@ var Mark2 = function() {
 		Note.execute = function( newExecute ) {
 
 			if( newExecute === undefined ) {
-
 				 
-        			_execute( _position );
+        			_execute( _end * Mark2.easing[ this.ease() ]( _position / _end ) );
         			
 
 			}else{
@@ -236,8 +290,9 @@ var Mark2 = function() {
 		_loopStart 		   = 0,
 		_roll 	   		   = false,
 		_state 	  	 	   = false,								
-		_state     		   = false,
+		_state     		   = false,		
 		_playhead  		   = 0,
+		_finish,
 		_tick,
 		_bpm;
 		
@@ -245,9 +300,14 @@ var Mark2 = function() {
 
 			if( param.loop === undefined ) {
 
-				this.loop( false );
+				this.loop( true );
 
+			}else{
+				
+				this.loop( param.loop );				
 			}
+
+
 
 			if( param.bpm === undefined ) {
 
@@ -385,15 +445,15 @@ var Mark2 = function() {
 
 		}
 
-		Sequencer.loop = function( newLoop ) {
+		Sequencer.loop = function( a ) {
 
-			if( newLoop === undefined ) {
+			if( a === undefined ) {
 
 				return _loop;
 
 			}
 
-			_loop = newLoop;
+			_loop = a;
 
 		}
 
@@ -443,6 +503,31 @@ var Mark2 = function() {
 
 			this.pause();
 			_playhead = 0;
+
+			return this;
+
+		}
+
+		Sequencer.finish = function( a ){
+
+
+			if( a !== undefined ){
+
+
+				_finish = a;				
+				return this;
+
+			}
+
+
+			if( _finish !== undefined ){
+
+				_finish();
+
+
+			}
+			
+			return this;
 
 		}
 		
@@ -504,12 +589,18 @@ var Mark2 = function() {
 							self.play();
 
 					}else{
+						
 
 						if( self.loop() ) {
 
+							self.finish();
 							self.reset();
 							self.exeIndex = 0;
 							self.play();
+
+						}else{
+
+							self.finish();
 
 						}
 
