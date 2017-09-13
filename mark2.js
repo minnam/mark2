@@ -1,69 +1,145 @@
 /**
-*	@author  Min Nam https://github.com/MINNAM/Mark2
+*	@author  Min Nam https://github.com/MINNAM/M2
 *	@namespace
 */
-var Mark2 = function() {
-
-	var Mark2 = {
-
+var M2 = function () {
+	var group = {nonames: []};
+	var M2 = {
 		/**
 		 * Create a new Sequencer
-		 * 
-		 * @param {string} type
-		 * @param {int} bpm
-		 * @param {boolean} loop
-		 * @return {Mark2.Sequencer}
-		 * @memberOf Mark2#
 		 *
-		 */		
-		new : function( param ) {
+		 * @param {string} group
+		 * @param {string} type 'variable' or 'quantized'
+		 * @param {boolean} loop
+		 * @param {int} fps Frames per second
+		 * @param {int} end Count length between Notes. Only applies to VariableSequencer
+		 * @return {M2.Sequencer}
+		 * @memberOf M2#
+		 *
+		 */
+		new: function (param) {
+			switch (param.type) {
+				case 'variable': {
+					var seq = new VariableSequencer(param);
 
-			return new VariableSequencer( param );
+					if (param.group) {
+						if (group[param.group]) {
+							group[param.group].push(seq);
+						}
+					} else {
+						group['nonames'].push(seq);
+					}
 
+					return seq;
+				}
+
+				case 'quantiazed': {
+					var seq = new QuantizedSequencer(param);
+
+					if (param.group) {
+						if (group[param.group]) {
+							group[param.group].push(seq);
+						} else {
+							group['nonames'].push(seq);
+						}
+					}
+
+					return seq;
+				}
+
+				default: {
+					var seq = new QuantizedSequencer(param);
+
+					if (param.group) {
+						if (group[param.group]) {
+							group[param.group].push(seq);
+						}
+					}
+
+					return seq;
+				}
+			}
 		},
 
 		/**
-		 * Play all Sequencer
-		 * @memberof Mark2#
+		 * Play all Sequencer or a group of Sequnecers
+		 * @param {string} a A name of group
+		 * @memberof M2#
 		 */
-		play: function() {},
+		play: function (a) {
+			if (a !== undefined) {
+				group[a].map(function(seq) {
+					seq.play();
+				});
+			} else {
+				for (var key in group) {
+					group[key].map(function(seq) {
+						seq.play();
+					});
+				}
+			}
+		},
 
 		/**
-		 * Pause all Sequencer
-		 * @memberof! Mark2#
+		 * Pause all Sequencer or a group of Sequnecers
+		 * @param {string} a A name of group
+		 * @memberof! M2#
 		 */
-		pause: function() {},
+		pause: function (a) {
+			if (a !== undefined) {
+				group[a].map(function(seq) {
+					seq.pause();
+				});
+			} else {
+				for (var key in group) {
+					group[key].map(function(seq) {
+						seq.pause();
+					});
+				}
+			}
+		},
 
-		easing : {
-
-			new : function( a, b ){
-
-				this[ a ] = b;
-
+		/**
+		 * Stop all Sequencer or a group of Sequnecers
+		 * @param {string} a A name of group
+		 * @memberof! M2#
+		 */
+		stop: function (a) {
+			if (a !== undefined) {
+				group[a].map(function(seq) {
+					seq.stop();
+				});
+			} else {
+				for (var key in group) {
+					group[key].map(function(seq) {
+						seq.stop();
+					});
+				}
+			}
+		},
+		easing: {
+			new: function ( a, b ) {
+				this[a] = b;
 			},
-
-			linear    : function( a ) { return a  },
-			quadratic : function( a ) { return a * a },
-			cubic     : function( a ) { return a * a * a },
-			quintic   : function( a ) { return a * a * a * a }			
-
+			linear: function (a) {return a;},
+			quadratic: function (a) {return a * a;},
+			cubic: function (a) {return a * a * a;},
+			quintic: function (a) {return a * a * a * a;}
 		}
 
 	};
 
+	var vendors = ['ms', 'moz', 'webkit', 'o'];
 
-	var vendors = [ 'ms', 'moz', 'webkit', 'o' ];
-
-    for( var i = 0; i < vendors.length && !window.requestAnimationFrame; ++i ){
-
-        window.requestAnimationFrame = window[ vendors[ x ] + 'RequestAnimationFrame' ];
-        window.cancelAnimationFrame  = window[ vendors[ x ] + 'CancelAnimationFrame' ] || window[ vendors[ x ] + 'CancelRequestAnimationFrame' ];
+    for (var i = 0; i < vendors.length && !window.requestAnimationFrame; ++i) {
+        window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+        window.cancelAnimationFrame  = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
     }
 
 	/**
-	*	Note object is an individual node for Sequencer. When Note is executed by Sequencer, 
-	*	Note's postion will be incremented or decremented while executing it's callback function 
-	*	untill it reaches to end. 
+	*	Note object is an individual node for Sequencer. When Note is executed by Sequencer,
+	*	Note's postion will be incremented or decremented while executing it's callback function
+	*	untill it reaches to end.
 	*
 	* 	@constructor
 	* 	@param param
@@ -73,9 +149,9 @@ var Mark2 = function() {
 	*	@param {int} param.fps
 	*	@param {int} param.velocity
 	*	@param {execute} param.execute
-	*	@memberof Mark2	
+	*	@memberof M2
 	*/
-	var Note = function( param ) {
+	var Note = function ( param ) {
 
 		var Note = {},
 		_index,
@@ -86,583 +162,446 @@ var Mark2 = function() {
 		_velocity,
 		_fps,
 		_ease;
-		
-		Note.init = function() {
 
-			this.index( param.index );
-			this.start( param.start ? param.start : 0 );			
-			this.end( param.end ? param.end : 50 );			
-			this.fps( param.fps ? param.fps : 20 );
-			this.velocity( param.velocity ? param.velocity : 1 );
-			this.execute( param.execute ? param.execute : this.logEmpty );
-			this.ease( param.ease ? param.ease : 'quintic' );
+		Note.init = function () {
+			this.index(param.index);
+			this.start(param.start ? param.start : 0);
+			this.end(param.end ? param.end : 50);
+			this.fps(param.fps ? param.fps : 20);
+			this.velocity(param.velocity ? param.velocity : 1);
+			this.execute(param.execute ? param.execute : this.log);
+			this.ease(param.ease ? param.ease : 'linear');
 			this.setProceed();
-			
-			return Note;
 
-		}		
+			return Note;
+		}
 
 		/**
 		 * @param  {int} index
 		 * @return {int}
-		 * @memberof! Mark2.Note#
+		 * @memberof! M2.Note#
 		 */
-		Note.index = function( a ) {
-
-			if( a === undefined ) {
-
-				return _index;
-
+		Note.index = function (a) {
+			if (a !== undefined) {
+				_index = a;
 			}
 
-			_index = a;
+			return _index;
+		}
 
-		}		
+		/**
+		 * @return {int} Start position associated with execute function.
+		 * @memberof! M2.Note#
+		 */
+		Note.start = function (a) {
+			if (a !== undefined) {
+				_start = a;
+			}
+
+			this.position(a);
+
+			return _start;
+		}
 
 		/**
 		 * Reset position associated with execute function.
-		 * @memberof! Mark2.Note#
+		 * @memberof! M2.Note#
 		 */
-		Note.reset = function() {
-
-			this.start( _start );
-
+		Note.reset = function () {
+			this.start(_start);
 		}
 
-		/**		 
-		 * @return {int} Start position associated with execute function.
-		 * @memberof! Mark2.Note#
-		 */
-		Note.start = function( a ) {
-
-			if( a === undefined ) {
-
-				return _start;
-
-			}
-
-			_start = a;
-
-			this.position( a );
-
-		}
-
-		/**	
+		/**
 		 * @default 0
 		 * @param  {int} position
-		 * @memberof! Mark2.Note#
+		 * @memberof! M2.Note#
 		 */
-		Note.position = function( a ) {
-
-			if( a === undefined ) {
-
-				return _position;
-
+		Note.position = function (a) {
+			if (a !== undefined) {
+				_position = a;
 			}
 
-			_position = a;
-
+			return _position;
 		}
 
-		/**	
+		/**
 		 * @default 0
 		 * @param  {int} end
-		 * @memberof! Mark2.Note#
-		 */		
-		Note.end = function( newEnd ) {
-
-			if( newEnd === undefined ) {
-
-				return _end;
-
-			}else{
-
-				_end = newEnd;
-
+		 * @memberof! M2.Note#
+		 */
+		Note.end = function (a) {
+			if (a !== undefined) {
+				_end = a;
 			}
 
-		}		
-
-		Note.fps = function( a ) {
-
-			if( a === undefined ) {
-
-				return _fps;
-
-			}
-
-			_fps = a;
-
+			return _end;
 		}
 
-		Note.velocity = function( a ) {
-
-			if( a === undefined ) {
-
-				return _velocity;
-
+		Note.fps = function (a) {
+			if (a === undefined) {
+				_fps = a;
 			}
 
-			_velocity = a;
-
+			return _fps;
 		}
 
-		Note.ease = function( a ) {
-
-			if( a === undefined ) {
-
-				return _ease;
-
+		Note.velocity = function (a) {
+			if (a !== undefined) {
+				_velocity = a;
 			}
 
-			_ease = a;
-
+			return _velocity;
 		}
 
-		Note.proceed = function() {}
+		Note.ease = function (a) {
+			if (a !== undefined) {
+				_ease = a;
+			}
 
-		Note.setProceed = function() {
+			return _ease;
+		}
 
-			if( _end < _start ) {
-
+		Note.setProceed = function () {
+			if (_end < _start) {
 				this.proceed = this.decrement;
-
-			}else{
-				
+			} else{
 				this.proceed = this.increment;
-
 			}
-
-		}
-		
-		Note.increment = function() {
-
-			_position += _velocity;
-
-			// console.log(  );
-
 		}
 
-		
-		Note.decrement = function( a ) {
-
-			_position -= _velocity;
-
+		Note.increment = function () {
+			_position = _position + _velocity;
 		}
 
-		
-		Note.execute = function( newExecute ) {
+		Note.decrement = function () {
+			_position = _position + _velocity;
+		}
 
-			if( newExecute === undefined ) {
-				 
-        			_execute( _end * Mark2.easing[ this.ease() ]( _position / _end ) );
-        			
-
-			}else{
-
-				_execute = newExecute;
+		Note.execute = function (a) {
+			if ( a !== undefined ) {
+				_execute = a;
+			} else {
+				_execute({
+					end: _end,
+					position: _position,
+					fps: _fps,
+					progress: M2.easing[this.ease()](_position / _end)
+				});
 			}
-				
 		}
 
-		Note.logEmpty = function() {
-
+		Note.log = function () {
 			console.log( "Empty Note " + _index + " is executing.");
-
 		}
 
 		return Note.init();
-
 	};
 
-	
-
 	/**
-	*	Sequencer is a 
-	*	@memberof Mark2
+	*	Sequencer is a
+	*	@memberof M2
 	*	@constructor
 	*/
-	var Sequencer = function( param ) {
-
+	var Sequencer = function ( param ) {
 		var Sequencer = {},
-		_seq       		   = {},
-		_loop 	   		   = true,
-		_loopStart 		   = 0,
-		_roll 	   		   = false,
-		_state 	  	 	   = false,								
-		_state     		   = false,		
-		_playhead  		   = 0,
+		_notes = {},
+		_loop = true,
+		_loopStart = 0,
+		_roll = false,
+		_playhead,
 		_finish,
+		_fps,
+		_end,
 		_tick,
-		_bpm;
-		
-		Sequencer.init = function() {
+		_bpm,
+		_total = 0
 
-			if( param.loop === undefined ) {
-
-				this.loop( true );
-
-			}else{
-				
-				this.loop( param.loop );				
-			}
-
-
-
-			if( param.bpm === undefined ) {
-
-				this.bpm( 120 );
-
-			}else{
-
-				this.bpm( param.bpm );
-
-			}
-
-			Sequencer.defaultExecution(function() {});
-			
+		Sequencer.init = function () {
+			this.loop( param.loop ? param.loop : true );
+			this.playhead(0);
+			this.end(param.end);
+			this.fps(param.fps);
+			this.default(param.default ? param.default : function () {});
 
 			return Sequencer;
-
 		}
 
-		
-		Sequencer.seq = function() {
+		Sequencer.end = function (a) {
+			if (a !== undefined) {
+				_end = a;
+			}
 
-			return seq;
-
+			return _end;
 		}
 
-		Sequencer.iterate = function() {
+		Sequencer.fps = function (a) {
+			if (a === undefined) {
+				_fps = a;
+			}
 
+			return _fps;
+		}
+
+		Sequencer.loopStart  = function (a) {
+			if (a !== undefined) {
+				_loopStart = a;
+			}
+
+			return _loopStart;
+		}
+
+		Sequencer.iterate = function () {
 			var length = 0, key;
 
-			for( key in _seq ) {
-						
+			for (key in _notes) {
 				length++;
-
 			}
 
-			return { length: length, key: key };
-
+			return {length: length, key: key};
 		};
 
-		
-		Sequencer.reset = function() {
+		Sequencer.playhead = function (a) {
+			if (a !== undefined) {
+				_playhead = a;
+			}
 
-		
-			for( var key in _seq ) {
-						
-				_seq[ key ].reset();
-
-			}		
-
+			return _playhead;
 		}
 
-		
-		Sequencer.length = function() {
+		Sequencer.reset = function () {
+			this.playhead(0);
+			_total = 0;
 
-			return this.iterate()[ "length" ];
-
+			for ( var key in _notes ) {
+				_notes[key].reset();
+			}
 		}
 
-		
-		Sequencer.lastElement = function() {
-
-			return this.iterate()[ "key" ];
-			
+		Sequencer.length = function () {
+			return this.iterate().length;
 		}
 
-		
-		Sequencer.add = function( param ) {
+		Sequencer.lastNote = function () {
+			return this.iterate().key;
+		}
 
+		Sequencer.default = function (a) {
+			if (a !== undefined) {
+				_default = a;
+			} else {
+				_default(this);
+			}
+		}
+
+		Sequencer.add = function (a) {
 			var length = this.length();
 
-			if( param === undefined ) { 
-
-				_seq[ length ] = new Note({ index: length });
+			if (a === undefined) {
+				_notes[length] = new Note({index: length});
 
 				return;
-
 			}
 
-			if( param.index === undefined ) {
-			 	
-
-				if( length < 1 ) {
-
-					_seq[ 0 ] = new Note( param );
-
-				}else{
-
-					_seq[ length ] = new Note( param );
-
+			if (a.index === undefined) {
+				if (length < 1) {
+					_notes[0] = new Note(
+						Object.assign({
+							end: _end,
+							fps: _fps
+						}, a)
+					);
+				} else{
+					_notes[length] = new Note(
+						Object.assign({
+							end: _end,
+							fps: _fps
+						}, a)
+					);
 				}
-
-
-			}else{
-
-				_seq[ param.index ] = new Note( param );
-
+			} else{
+				_notes[a.index] = new Note(
+					Object.assign({
+						end: _end,
+						fps: _fps
+					}, a)
+				);
 			}
-
 		}
 
-		Sequencer.get = function( index ) {
-
-			return _seq[ index ];
-
+		Sequencer.get = function (a) {
+			return _notes[a];
 		}
 
-		Sequencer.delete = function( index ) {
+		Sequencer.nextExist = function () {
+			return this.get( _playhead + 1 );
+		}
 
-			if( index === undefined ) {
-				
-				_seq[ this.lastElement() ] = undefined;
+		Sequencer.next = function () {
+			_playhead++;
+		}
 
-			}else{
+		Sequencer.prev = function () {
+			_playhead--;
+		}
 
-				_seq[ index ] = undefined;
-
+		Sequencer.delete = function (a) {
+			if (index === undefined) {
+				_notes[this.lastNote()] = undefined;
+			} else{
+				_notes[a] = undefined;
 			}
-
 		}
 
-		Sequencer.bpm = function( newBpm ) {
-
-			if( _state ) {
-
-				this.pause();
-				_bpm = 60000 / newBpm;
-				this.play();
-
-			}else{
-
-				this.pause();
-				_bpm = 60000 / newBpm;
-
-			}
-
-		}
-
-		Sequencer.loop = function( a ) {
-
-			if( a === undefined ) {
-
+		Sequencer.loop = function (a) {
+			if (a === undefined) {
 				return _loop;
-
 			}
 
 			_loop = a;
-
 		}
 
-		Sequencer.loopStart = function( newLoopStart ) {
-
-			_loopStart = newLoopStart;
-			
+		Sequencer.loopStart = function (a) {
+			_loopStart = a;
 		}
 
-		Sequencer.roll = function( newRoll ) {
-
-			_roll = newRoll;
-			
+		Sequencer.roll = function (a) {
+			_roll = a;
 		}
 
-		Sequencer.isRolling = function() {
-
+		Sequencer.isRolling = function () {
 			return _roll;
-
 		}
 
-		Sequencer.exeIndex = 0;	
+		Sequencer.pause = function () {
+			clearInterval(this.tick);
+			clearTimeout(this.currentNote);
 
-		Sequencer.defaultExecution = function( newDefaultExecution ) {
-
-			if( newDefaultExecution === undefined ) {
-
-				_defaultExecution();
-
-			}else{
-
-				_defaultExecution = newDefaultExecution;
-
+			if (this.executionId) {
+				window.cancelAnimationFrame( this.executionId );
 			}
-
-
-		}		
-
-		Sequencer.pause = function() {
-
-			_state = false;
-			clearInterval( _tick );
-
 		}
 
-		Sequencer.stop = function() {
-
+		Sequencer.stop = function () {
 			this.pause();
-			_playhead = 0;
+			this.playhead(0);
 
 			return this;
-
 		}
 
-		Sequencer.finish = function( a ){
-
-
-			if( a !== undefined ){
-
-
-				_finish = a;				
+		Sequencer.finish = function (a) {
+			if ( a !== undefined ) {
+				_finish = a;
 				return this;
-
 			}
 
-
-			if( _finish !== undefined ){
-
+			if ( _finish !== undefined ) {
 				_finish();
-
-
 			}
-			
+
 			return this;
-
 		}
-		
-		return Sequencer.init();
 
+		return Sequencer.init();
 	};
 	/**
 	 *
-	 * @augments Mark2.Sequencer
+	 * @augments M2.Sequencer
 	 * @constructor
-	 * @memberOf Mark2
+	 * @memberOf M2
 	 */
-	var VariableSequencer = function( param ) {
+	var VariableSequencer = function (param) {
+		var VariableSequencer = new Sequencer(param);
 
-		var VariableSequencer = new Sequencer( param );
-
-		VariableSequencer.init = function() {
-			
+		VariableSequencer.init = function () {
 			return VariableSequencer;
-
 		}
 
-		VariableSequencer.play = function( ) {
+		VariableSequencer.play = function () {
+			var id, self = this;
 
-			var id, self = this;		
-			execution = function() {
-		
-				var Note = self.get( self.exeIndex );
+			this.execution = function () {
+				var note = self.get(self.playhead());
 
-				if( Note.position() < Note.end() ) {
-
-					setTimeout(function() {
-    			
-			
-						self.defaultExecution();
-
-						for( var i = 0; i < self.exeIndex; i++ ) {
-
-							self.get( i ).execute();															
-
-						}
-			
-						Note.execute();
-						
-
-						id = window.requestAnimationFrame( execution );
-
-						Note.proceed();							
-
-					}, Note.fps() );
-
-				}else{
-
-					window.cancelAnimationFrame( id );							
-					
-					if( self.get( self.exeIndex + 1 ) != undefined ) {
-
-							self.exeIndex++;
-							self.play();
-
-					}else{
-						
-
-						if( self.loop() ) {
-
-							self.finish();
-							self.reset();
-							self.exeIndex = 0;
-							self.play();
-
-						}else{
-
-							self.finish();
-
+				if (M2.easing[note.ease()](note.position() / note.end()) <= 1) {
+					self.currentNote = setTimeout(function () {
+						if (note.position() <= note.end()) {
+							self.default(self);
+							note.execute();
+							note.proceed();
+						} else {
+							clearTimeout(self.currentNote);
+							window.cancelAnimationFrame(self.executionId);
 						}
 
+						self.executionId = window.requestAnimationFrame(self.execution);
+					}, note.fps());
+
+					self.total++;
+
+				} else{
+					clearTimeout(self.currentNote);
+					window.cancelAnimationFrame(self.executionId);
+
+					if (!self.isRolling()) {
+						if (self.nextExist() != undefined) {
+							self.next();
+							self.play();
+						} else{
+							if (self.loop()) {
+								self.finish();
+								self.reset();
+								self.playhead(0);
+								self.play();
+							} else{
+								self.finish();
+							}
+						}
+					} else {
+						self.finish();
+						self.play();
 					}
-									
 				}
-
 			}
 
-			id = window.requestAnimationFrame( execution );
-			
+			this.execution();
 		}
 
 		return VariableSequencer.init();
-
 	}
 
 	/**
 	 *
-	 * @augments Mark2.Sequencer
+	 * @augments M2.Sequencer
 	 * @constructor
-	 * @memberOf Mark2
+	 * @memberOf M2
 	 */
-	var QuantizedSequencer = function() {
+	var QuantizedSequencer = function (param) {
+		var QuantizedSequencer = new Sequencer(param);
 
-		var FixedSequencer = new Sequencer();
-
-		FixedSequencer.init = function() {
-
-			return FixedSequencer;
-
+		QuantizedSequencer.init = function () {
+			return QuantizedSequencer;
 		}
 
-		FixedSequencer.play = function() {
+		QuantizedSequencer.play = function () {
+			var self = this;
 
-			_state = true;
+			this.tick = setInterval(function () {
+				var note = this.get((this.playhead) % this.length());
 
-			_tick = setInterval( function() {
+				note.execute();
 
-				_seq[ ( _loopStart + _playhead )  % this.length() ].execute( "hello" + _playhead );
-
-				if( ! this.isRolling() ) {
-
-					_playhead++;
-
+				if (!this.isRolling() ) {
+					this.playhead++;
 				}
 
-				if( !_loop ) {
-
-					Sequencer.pause();
-
+				if (!this.loop ) {
+					this.pause();
 				}
-
-			}, _bpm );
-
+			}.bind(this), this.fps );
 		}
 
-		return FixedSequencer.init();
-
+		return QuantizedSequencer.init();
 	}
 
-
-	return Mark2;
-
+	return M2;
 }();
