@@ -12,7 +12,7 @@ var M2 = function () {
 		 * @param {string} type 'variable' or 'quantized'
 		 * @param {boolean} loop
 		 * @param {int} fps Frames per second
-		 * @param {int} end Count length between Notes. Only applies to VariableSequencer
+		 * @param {int} end Count length between Events. Only applies to VariableSequencer
 		 * @return {M2.Sequencer}
 		 * @memberOf M2#
 		 *
@@ -137,8 +137,8 @@ var M2 = function () {
     }
 
 	/**
-	*	Note object is an individual node for Sequencer. When Note is executed by Sequencer,
-	*	Note's postion will be incremented or decremented while executing it's callback function
+	*	Event object is an individual node for Sequencer. When Event is executed by Sequencer,
+	*	Event's postion will be incremented or decremented while executing it's callback function
 	*	untill it reaches to end.
 	*
 	* 	@constructor
@@ -151,9 +151,9 @@ var M2 = function () {
 	*	@param {execute} param.execute
 	*	@memberof M2
 	*/
-	var Note = function ( param ) {
+	var Event = function ( param ) {
 
-		var Note = {},
+		var Event = {},
 		_index,
 		_start,
 		_position,
@@ -163,7 +163,7 @@ var M2 = function () {
 		_fps,
 		_ease;
 
-		Note.init = function () {
+		Event.init = function () {
 			this.index(param.index);
 			this.start(param.start ? param.start : 0);
 			this.end(param.end ? param.end : 50);
@@ -173,15 +173,15 @@ var M2 = function () {
 			this.ease(param.ease ? param.ease : 'linear');
 			this.setProceed();
 
-			return Note;
+			return Event;
 		}
 
 		/**
 		 * @param  {int} index
 		 * @return {int}
-		 * @memberof! M2.Note#
+		 * @memberof! M2.Event#
 		 */
-		Note.index = function (a) {
+		Event.index = function (a) {
 			if (a !== undefined) {
 				_index = a;
 			}
@@ -191,9 +191,9 @@ var M2 = function () {
 
 		/**
 		 * @return {int} Start position associated with execute function.
-		 * @memberof! M2.Note#
+		 * @memberof! M2.Event#
 		 */
-		Note.start = function (a) {
+		Event.start = function (a) {
 			if (a !== undefined) {
 				_start = a;
 			}
@@ -205,18 +205,18 @@ var M2 = function () {
 
 		/**
 		 * Reset position associated with execute function.
-		 * @memberof! M2.Note#
+		 * @memberof! M2.Event#
 		 */
-		Note.reset = function () {
+		Event.reset = function () {
 			this.start(_start);
 		}
 
 		/**
 		 * @default 0
 		 * @param  {int} position
-		 * @memberof! M2.Note#
+		 * @memberof! M2.Event#
 		 */
-		Note.position = function (a) {
+		Event.position = function (a) {
 			if (a !== undefined) {
 				_position = a;
 			}
@@ -227,9 +227,9 @@ var M2 = function () {
 		/**
 		 * @default 0
 		 * @param  {int} end
-		 * @memberof! M2.Note#
+		 * @memberof! M2.Event#
 		 */
-		Note.end = function (a) {
+		Event.end = function (a) {
 			if (a !== undefined) {
 				_end = a;
 			}
@@ -237,7 +237,7 @@ var M2 = function () {
 			return _end;
 		}
 
-		Note.fps = function (a) {
+		Event.fps = function (a) {
 			if (a === undefined) {
 				_fps = a;
 			}
@@ -245,7 +245,7 @@ var M2 = function () {
 			return _fps;
 		}
 
-		Note.velocity = function (a) {
+		Event.velocity = function (a) {
 			if (a !== undefined) {
 				_velocity = a;
 			}
@@ -253,7 +253,7 @@ var M2 = function () {
 			return _velocity;
 		}
 
-		Note.ease = function (a) {
+		Event.ease = function (a) {
 			if (a !== undefined) {
 				_ease = a;
 			}
@@ -261,7 +261,7 @@ var M2 = function () {
 			return _ease;
 		}
 
-		Note.setProceed = function () {
+		Event.setProceed = function () {
 			if (_end < _start) {
 				this.proceed = this.decrement;
 			} else{
@@ -269,15 +269,15 @@ var M2 = function () {
 			}
 		}
 
-		Note.increment = function () {
+		Event.increment = function () {
 			_position = _position + _velocity;
 		}
 
-		Note.decrement = function () {
+		Event.decrement = function () {
 			_position = _position + _velocity;
 		}
 
-		Note.execute = function (a) {
+		Event.execute = function (a) {
 			if ( a !== undefined ) {
 				_execute = a;
 			} else {
@@ -290,11 +290,11 @@ var M2 = function () {
 			}
 		}
 
-		Note.log = function () {
-			console.log( "Empty Note " + _index + " is executing.");
+		Event.log = function () {
+			console.log( "Empty Event " + _index + " is executing.");
 		}
 
-		return Note.init();
+		return Event.init();
 	};
 
 	/**
@@ -304,7 +304,7 @@ var M2 = function () {
 	*/
 	var Sequencer = function ( param ) {
 		var Sequencer = {},
-		_notes = {},
+		_events = {},
 		_loop = true,
 		_loopStart = 0,
 		_roll = false,
@@ -353,7 +353,7 @@ var M2 = function () {
 		Sequencer.iterate = function () {
 			var length = 0, key;
 
-			for (key in _notes) {
+			for (key in _events) {
 				length++;
 			}
 
@@ -372,8 +372,8 @@ var M2 = function () {
 			this.playhead(0);
 			_total = 0;
 
-			for ( var key in _notes ) {
-				_notes[key].reset();
+			for ( var key in _events ) {
+				_events[key].reset();
 			}
 		}
 
@@ -381,7 +381,7 @@ var M2 = function () {
 			return this.iterate().length;
 		}
 
-		Sequencer.lastNote = function () {
+		Sequencer.lastEvent = function () {
 			return this.iterate().key;
 		}
 
@@ -397,21 +397,21 @@ var M2 = function () {
 			var length = this.length();
 
 			if (a === undefined) {
-				_notes[length] = new Note({index: length});
+				_events[length] = new Event({index: length});
 
 				return;
 			}
 
 			if (a.index === undefined) {
 				if (length < 1) {
-					_notes[0] = new Note(
+					_events[0] = new Event(
 						Object.assign({
 							end: _end,
 							fps: _fps
 						}, a)
 					);
 				} else{
-					_notes[length] = new Note(
+					_events[length] = new Event(
 						Object.assign({
 							end: _end,
 							fps: _fps
@@ -419,7 +419,7 @@ var M2 = function () {
 					);
 				}
 			} else{
-				_notes[a.index] = new Note(
+				_events[a.index] = new Event(
 					Object.assign({
 						end: _end,
 						fps: _fps
@@ -429,7 +429,7 @@ var M2 = function () {
 		}
 
 		Sequencer.get = function (a) {
-			return _notes[a];
+			return _events[a];
 		}
 
 		Sequencer.nextExist = function () {
@@ -446,9 +446,9 @@ var M2 = function () {
 
 		Sequencer.delete = function (a) {
 			if (index === undefined) {
-				_notes[this.lastNote()] = undefined;
+				_events[this.lastEvent()] = undefined;
 			} else{
-				_notes[a] = undefined;
+				_events[a] = undefined;
 			}
 		}
 
@@ -474,7 +474,7 @@ var M2 = function () {
 
 		Sequencer.pause = function () {
 			clearInterval(this.tick);
-			clearTimeout(this.currentNote);
+			clearTimeout(this.currentEvent);
 
 			if (this.executionId) {
 				window.cancelAnimationFrame( this.executionId );
@@ -520,26 +520,26 @@ var M2 = function () {
 			var id, self = this;
 
 			this.execution = function () {
-				var note = self.get(self.playhead());
+				var event = self.get(self.playhead());
 
-				if (M2.easing[note.ease()](note.position() / note.end()) <= 1) {
-					self.currentNote = setTimeout(function () {
-						if (note.position() <= note.end()) {
+				if (M2.easing[event.ease()](event.position() / event.end()) <= 1) {
+					self.currentEvent = setTimeout(function () {
+						if (event.position() <= event.end()) {
 							self.default(self);
-							note.execute();
-							note.proceed();
+							event.execute();
+							event.proceed();
 						} else {
-							clearTimeout(self.currentNote);
+							clearTimeout(self.currentEvent);
 							window.cancelAnimationFrame(self.executionId);
 						}
 
 						self.executionId = window.requestAnimationFrame(self.execution);
-					}, note.fps());
+					}, event.fps());
 
 					self.total++;
 
 				} else{
-					clearTimeout(self.currentNote);
+					clearTimeout(self.currentEvent);
 					window.cancelAnimationFrame(self.executionId);
 
 					if (!self.isRolling()) {
@@ -586,9 +586,9 @@ var M2 = function () {
 			var self = this;
 
 			this.tick = setInterval(function () {
-				var note = this.get((this.playhead) % this.length());
+				var event = this.get((this.playhead) % this.length());
 
-				note.execute();
+				event.execute();
 
 				if (!this.isRolling() ) {
 					this.playhead++;

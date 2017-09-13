@@ -100,15 +100,15 @@
 
     seq.add({
         ease : 'quadratic',
-        execute : function (note) {
-            path[0].style.strokeDashoffset = Math.floor(length[0] * (1 - note.progress));
+        execute : function (event) {
+            path[0].style.strokeDashoffset = Math.floor(length[0] * (1 - event.progress));
         }
     });
 
     seq.add({
         ease : 'cubic',
-        execute: function (note) {
-            path[1].style.strokeDashoffset = Math.floor(length[1] * (1 - note.progress));
+        execute: function (event) {
+            path[1].style.strokeDashoffset = Math.floor(length[1] * (1 - event.progress));
         }
     });
 
@@ -122,15 +122,15 @@
 
     seq2.add({
         ease : 'linear',
-        execute : function (note) {
-            path[2].style.strokeDashoffset = Math.floor(length[2] * (1 - note.progress));
+        execute : function (event) {
+            path[2].style.strokeDashoffset = Math.floor(length[2] * (1 - event.progress));
         }
     });
     //
     seq2.add({
         ease : 'cubic',
-        execute: function (note) {
-            path[3].style.strokeDashoffset = Math.floor(length[3] * (1 - note.progress));
+        execute: function (event) {
+            path[3].style.strokeDashoffset = Math.floor(length[3] * (1 - event.progress));
         }
     });
 
