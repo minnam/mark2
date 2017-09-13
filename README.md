@@ -1,4 +1,4 @@
-# mark2
+# Mark2
 
 ## Creating a Sequencer
 
