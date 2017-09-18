@@ -1,10 +1,10 @@
 /**
-*	@author  Min Nam https://github.com/MINNAM/M2
+*	@author  Min Nam https://github.com/MINNAM/Mark2
 *	@namespace
 */
-var M2 = function () {
+var Mark2 = function () {
 	var group = {nonames: []};
-	var M2 = {
+	var Mark2 = {
 		/**
 		 * Create a new Sequencer
 		 *
@@ -13,8 +13,8 @@ var M2 = function () {
 		 * @param {boolean} loop
 		 * @param {int} fps Frames per second
 		 * @param {int} end Count length between Events. Only applies to VariableSequencer
-		 * @return {M2.Sequencer}
-		 * @memberOf M2#
+		 * @return {Mark2.Sequencer}
+		 * @memberOf Mark2#
 		 *
 		 */
 		new: function (param) {
@@ -64,7 +64,7 @@ var M2 = function () {
 		/**
 		 * Play all Sequencer or a group of Sequnecers
 		 * @param {string} a A name of group
-		 * @memberof M2#
+		 * @memberof Mark2#
 		 */
 		play: function (a) {
 			if (a !== undefined) {
@@ -83,7 +83,7 @@ var M2 = function () {
 		/**
 		 * Pause all Sequencer or a group of Sequnecers
 		 * @param {string} a A name of group
-		 * @memberof! M2#
+		 * @memberof! Mark2#
 		 */
 		pause: function (a) {
 			if (a !== undefined) {
@@ -102,7 +102,7 @@ var M2 = function () {
 		/**
 		 * Stop all Sequencer or a group of Sequnecers
 		 * @param {string} a A name of group
-		 * @memberof! M2#
+		 * @memberof! Mark2#
 		 */
 		stop: function (a) {
 			if (a !== undefined) {
@@ -149,7 +149,7 @@ var M2 = function () {
 	*	@param {int} param.fps
 	*	@param {int} param.velocity
 	*	@param {execute} param.execute
-	*	@memberof M2
+	*	@memberof Mark2
 	*/
 	var Event = function ( param ) {
 
@@ -179,7 +179,7 @@ var M2 = function () {
 		/**
 		 * @param  {int} index
 		 * @return {int}
-		 * @memberof! M2.Event#
+		 * @memberof! Mark2.Event#
 		 */
 		Event.index = function (a) {
 			if (a !== undefined) {
@@ -191,7 +191,7 @@ var M2 = function () {
 
 		/**
 		 * @return {int} Start position associated with execute function.
-		 * @memberof! M2.Event#
+		 * @memberof! Mark2.Event#
 		 */
 		Event.start = function (a) {
 			if (a !== undefined) {
@@ -205,7 +205,7 @@ var M2 = function () {
 
 		/**
 		 * Reset position associated with execute function.
-		 * @memberof! M2.Event#
+		 * @memberof! Mark2.Event#
 		 */
 		Event.reset = function () {
 			this.start(_start);
@@ -214,7 +214,7 @@ var M2 = function () {
 		/**
 		 * @default 0
 		 * @param  {int} position
-		 * @memberof! M2.Event#
+		 * @memberof! Mark2.Event#
 		 */
 		Event.position = function (a) {
 			if (a !== undefined) {
@@ -227,7 +227,7 @@ var M2 = function () {
 		/**
 		 * @default 0
 		 * @param  {int} end
-		 * @memberof! M2.Event#
+		 * @memberof! Mark2.Event#
 		 */
 		Event.end = function (a) {
 			if (a !== undefined) {
@@ -285,7 +285,7 @@ var M2 = function () {
 					end: _end,
 					position: _position,
 					fps: _fps,
-					progress: M2.easing[this.ease()](_position / _end)
+					progress: Mark2.easing[this.ease()](_position / _end)
 				});
 			}
 		}
@@ -299,7 +299,7 @@ var M2 = function () {
 
 	/**
 	*	Sequencer is a
-	*	@memberof M2
+	*	@memberof Mark2
 	*	@constructor
 	*/
 	var Sequencer = function ( param ) {
@@ -505,9 +505,9 @@ var M2 = function () {
 	};
 	/**
 	 *
-	 * @augments M2.Sequencer
+	 * @augments Mark2.Sequencer
 	 * @constructor
-	 * @memberOf M2
+	 * @memberOf Mark2
 	 */
 	var VariableSequencer = function (param) {
 		var VariableSequencer = new Sequencer(param);
@@ -522,7 +522,7 @@ var M2 = function () {
 			this.execution = function () {
 				var event = self.get(self.playhead());
 
-				if (M2.easing[event.ease()](event.position() / event.end()) <= 1) {
+				if (Mark2.easing[event.ease()](event.position() / event.end()) <= 1) {
 					self.currentEvent = setTimeout(function () {
 						if (event.position() <= event.end()) {
 							self.default(self);
@@ -571,9 +571,9 @@ var M2 = function () {
 
 	/**
 	 *
-	 * @augments M2.Sequencer
+	 * @augments Mark2.Sequencer
 	 * @constructor
-	 * @memberOf M2
+	 * @memberOf Mark2
 	 */
 	var QuantizedSequencer = function (param) {
 		var QuantizedSequencer = new Sequencer(param);
@@ -603,5 +603,5 @@ var M2 = function () {
 		return QuantizedSequencer.init();
 	}
 
-	return M2;
+	return Mark2;
 }();

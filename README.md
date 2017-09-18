@@ -7,7 +7,7 @@ There are two types of sequencers, "variable" and "quantized."
 ### Variable Sequencer
 A variable sequencer counts from 0 to the length of events and an individual event also counts from 0 to end before proceeding to the next event.
 ```javascript
-var sequencer = M2.new({
+var sequencer = Mark2.new({
     type: 'variable',
     loop: true,
     end: 100,
@@ -18,7 +18,7 @@ var sequencer = M2.new({
 ### Quntized Sequencer
 A quantized sequencer simply counts from 0 to the length of events.
 ```javascript
-var sequencer = M2.new({
+var sequencer = Mark2.new({
     type: 'quantized',
     loop: true,
 });
@@ -63,12 +63,12 @@ sequencer.roll(false);
 ```
 
 ### Global Control
-You can assign a group to a sequencer. By grouping them, sequencers within that group can be controlled at the same time. 
+You can assign a group to a sequencer. By grouping them, sequencers within that group can be controlled at the same time.
 If no group name is given, global action will be applied to all sequencers.
 
 ```javascript
 ...
-var sequencer = M2.new({
+var sequencer = Mark2.new({
     group: "group-1",
     type: 'quantized',
     loop: true,
