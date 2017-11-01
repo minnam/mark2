@@ -283,7 +283,7 @@ var Mark2 = function () {
 		}
 
 		Event.execute = function (a) {
-			if ( a !== undefined ) {
+			if (a !== undefined) {
 				_execute = a;
 			} else {
 				_execute({
@@ -296,7 +296,7 @@ var Mark2 = function () {
 		}
 
 		Event.log = function () {
-			console.log( "Empty Event " + _index + " is executing.");
+			console.log("Empty Event " + _index + " is executing.");
 		}
 
 		return Event.init();
@@ -307,7 +307,7 @@ var Mark2 = function () {
 	*	@memberof Mark2
 	*	@constructor
 	*/
-	var Sequencer = function ( param ) {
+	var Sequencer = function (param) {
 		var Sequencer = {},
 		_events = {},
 		_loop = true,
@@ -322,7 +322,7 @@ var Mark2 = function () {
 		_total = 0
 
 		Sequencer.init = function () {
-			this.loop( param.loop ? param.loop : true );
+			this.loop(param.loop ? param.loop : true);
 			this.playhead(0);
 			this.end(param.end);
 			this.fps(param.fps);
@@ -377,7 +377,7 @@ var Mark2 = function () {
 			this.playhead(0);
 			_total = 0;
 
-			for ( var key in _events ) {
+			for (var key in _events) {
 				_events[key].reset();
 			}
 		}
@@ -438,7 +438,7 @@ var Mark2 = function () {
 		}
 
 		Sequencer.nextExist = function () {
-			return this.get( _playhead + 1 );
+			return this.get(_playhead + 1);
 		}
 
 		Sequencer.next = function () {
@@ -482,7 +482,7 @@ var Mark2 = function () {
 			clearTimeout(this.currentEvent);
 
 			if (this.executionId) {
-				window.cancelAnimationFrame( this.executionId );
+				window.cancelAnimationFrame(this.executionId);
 			}
 		}
 
@@ -595,14 +595,14 @@ var Mark2 = function () {
 
 				event.execute();
 
-				if (!this.isRolling() ) {
+				if (!this.isRolling()) {
 					this.playhead++;
 				}
 
-				if (!this.loop ) {
+				if (!this.loop) {
 					this.pause();
 				}
-			}.bind(this), this.fps );
+			}.bind(this), this.fps);
 		}
 
 		return QuantizedSequencer.init();
