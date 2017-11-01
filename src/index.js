@@ -3,6 +3,11 @@
 *	@namespace
 */
 var Mark2 = function () {
+
+	if (typeof(window) == 'undefined') {
+	  window = {}
+	}
+
 	var group = {nonames: []};
 	var Mark2 = {
 		/**
@@ -132,8 +137,8 @@ var Mark2 = function () {
 	var vendors = ['ms', 'moz', 'webkit', 'o'];
 
     for (var i = 0; i < vendors.length && !window.requestAnimationFrame; ++i) {
-        window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-        window.cancelAnimationFrame  = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
+        window.requestAnimationFrame = window[vendors[i] + 'RequestAnimationFrame'];
+        window.cancelAnimationFrame  = window[vendors[i] + 'CancelAnimationFrame'] || window[vendors[i] + 'CancelRequestAnimationFrame'];
     }
 
 	/**
@@ -605,3 +610,5 @@ var Mark2 = function () {
 
 	return Mark2;
 }();
+
+module.exports = Mark2;

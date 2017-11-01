@@ -1,0 +1,25 @@
+{
+  "name": "mark2",
+  "version": "1.0.0",
+  "description": "A collective of sequencers for scheduling events",
+  "main": "src/index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/minnam/mark2.git"
+  },
+  "keywords": [
+    "sequencer"
+  ],
+  "author": "Min Nam <hi@minnam.io> (http://minnam.io/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/minnam/mark2/issues"
+  },
+  "homepage": "https://github.com/minnam/mark2#readme"
+}
