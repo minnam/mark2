@@ -14,7 +14,7 @@
     "dev": "webpack-dev-server --port 3000 --devtool eval --progress --colors --hot --content-base dist",
     "build": "webpack -p",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "check-converage": "istanbul check-coverage --statements 100 --branches 100 --functions 100 --lines 100",
+    "check-coverage": "istanbul check-coverage --statements 50 --branches 40 --functions 50 --lines 50",
     "report-coverage": "cat ./coverage/lcov.info | codecov"
   },
   "repository": {
@@ -61,7 +61,7 @@
   },
   "config": {
     "ghooks": {
-      "pre-commit": "npm run test:single"
+      "pre-commit": "npm run test:single && npm run check-coverage"
     }
   }
 }
