@@ -9,11 +9,13 @@
   "scripts": {
     "commit": "git-cz",
     "test": "mocha ./src --compilers js:babel-register --require ./test/helpers.js --require ./test/dom.js --recursive -w",
-    "test:single": "mocha ./src --compilers js:babel-register --require ./test/helpers.js --require ./test/dom.js --recursive",
+    "test:single": "istanbul cover -x *.spec.js _mocha -- -R spec ./src",
     "tdd": "npm test -- --watch",
     "dev": "webpack-dev-server --port 3000 --devtool eval --progress --colors --hot --content-base dist",
     "build": "webpack -p",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "check-converage": "istanbul check-coverage --statements 100 --branches 100 --functions 100 --lines 100",
+    "report-coverage": "cat ./coverage/lcov.info | codecov"
   },
   "repository": {
     "type": "git",
@@ -36,6 +38,7 @@
     "babel-preset-es2015": "6.24.1",
     "babel-register": "6.26.0",
     "chai": "4.1.2",
+    "codecov.io": "0.1.6",
     "commitizen": "2.9.6",
     "cz-conventional-changelog": "2.1.0",
     "enzyme": "3.1.0",
@@ -44,6 +47,7 @@
     "eslint-plugin-import": "2.8.0",
     "eslint-plugin-jsx-a11y": "6.0.2",
     "eslint-plugin-react": "7.4.0",
+    "ghooks": "2.0.0",
     "istanbul": "0.4.5",
     "jsdom": "11.3.0",
     "mocha": "4.0.1",
@@ -52,7 +56,10 @@
     "sinon": "4.0.2",
     "webpack": "3.8.1"
   },
-  "czConfig" : {
+  "czConfig": {
     "path": "node_modules/cz-conventional-changelog"
+  },
+  "config": {
+    "pre-commit": "npm run test:single npm run check-coverage"
   }
 }
