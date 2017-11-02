@@ -1,6 +1,6 @@
 /**
-*	@author  Min Nam https://github.com/MINNAM/Mark2
-*	@namespace
+* @author  Min Nam https://github.com/MINNAM/Mark2
+* @namespace
 */
 var Mark2 = function () {
 
@@ -610,4 +610,4 @@ var Mark2 = function () {
 	return Mark2;
 }();
 
-module.exports = Mark2;
+export default Mark2;
