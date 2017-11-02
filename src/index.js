@@ -23,47 +23,44 @@ var Mark2 = function () {
 		 *
 		 */
 		new: function (param) {
-			switch (param.type) {
-				case 'variable': {
-					var seq = new VariableSequencer(param);
+			if (param) {
+				switch (param.type) {
+					case 'variable': {
+						var seq = new VariableSequencer(param);
 
-					if (param.group) {
-						if (group[param.group]) {
-							group[param.group].push(seq);
-						}
-					} else {
-						group['nonames'].push(seq);
-					}
-
-					return seq;
-				}
-
-				case 'quantiazed': {
-					var seq = new QuantizedSequencer(param);
-
-					if (param.group) {
-						if (group[param.group]) {
-							group[param.group].push(seq);
+						if (param.group) {
+							if (group[param.group]) {
+								group[param.group].push(seq);
+							}
 						} else {
 							group['nonames'].push(seq);
 						}
+
+						return seq;
 					}
 
-					return seq;
-				}
+					case 'quantiazed': {
+						var seq = new QuantizedSequencer(param);
 
-				default: {
-					var seq = new QuantizedSequencer(param);
-
-					if (param.group) {
-						if (group[param.group]) {
-							group[param.group].push(seq);
+						if (param.group) {
+							if (group[param.group]) {
+								group[param.group].push(seq);
+							} else {
+								group['nonames'].push(seq);
+							}
 						}
+
+						return seq;
 					}
 
-					return seq;
 				}
 			}
+
+			var seq = new QuantizedSequencer({
+				loop: true
+			});
+
+			return seq;
 		},
 
 		/**
@@ -315,6 +312,7 @@ var Mark2 = function () {
 		_roll = false,
 		_playhead,
 		_finish,
+		_default,
 		_fps,
 		_end,
 		_tick,
@@ -517,6 +515,8 @@ var Mark2 = function () {
 	var VariableSequencer = function (param) {
 		var VariableSequencer = new Sequencer(param);
 
+		VariableSequencer.type = 'variable';
+
 		VariableSequencer.init = function () {
 			return VariableSequencer;
 		}
@@ -583,20 +583,19 @@ var Mark2 = function () {
 	var QuantizedSequencer = function (param) {
 		var QuantizedSequencer = new Sequencer(param);
 
+		QuantizedSequencer.type = 'quantized';
+
 		QuantizedSequencer.init = function () {
 			return QuantizedSequencer;
 		}
 
 		QuantizedSequencer.play = function () {
-			var self = this;
-
 			this.tick = setInterval(function () {
-				var event = this.get((this.playhead) % this.length());
-
+				var event = this.get(this.playhead() % this.length());
 				event.execute();
 
 				if (!this.isRolling()) {
-					this.playhead++;
+					this.playhead(this.playhead() + 1);
 				}
 
 				if (!this.loop) {
