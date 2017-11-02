@@ -60,6 +60,8 @@
     "path": "node_modules/cz-conventional-changelog"
   },
   "config": {
-    "pre-commit": "npm run test:single"
+    "ghooks": {
+      "pre-commit": "npm run test:single"
+    }
   }
 }
