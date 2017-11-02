@@ -8,17 +8,17 @@ describe('Test for mark2', function () {
   describe('Create a default sequencer', function () {
     var sequencer = mark2.new();
 
-    it('Type of quantized', function () {
+    it('should have type of quantized', function () {
       expect(sequencer).to.have.property('type', 'quantized')
     })
 
-    it('Loop set to true', function () {
+    it('should have loop to be true by default', function () {
       expect(sequencer.loop()).to.equal(true)
     })
 
     let count = 0;
 
-    it('Adding events to sequencer and play', function () {
+    it('should add events, play, and have length of 2', function () {
       sequencer.add({
         execute: function (event) {
           count++
@@ -39,7 +39,7 @@ describe('Test for mark2', function () {
       expect(sequencer.length()).to.equal(2)
     })
 
-    it('Play sequencer and count until 6 and stopping a sequencer resets playhead', function () {
+    it('should stop at count of 6 and reset playhead to 0', function () {
       this.timeout(100);
 
       setTimeout(function () {
