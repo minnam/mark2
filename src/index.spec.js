@@ -3,7 +3,7 @@ var mark2 = require('./index.js');
 
 describe('Test for mark2', function () {
   it('Passing test', function () {
-    expect(false).to.be.true
+    expect(0).to.be.true
   })
   describe('Create a default sequencer', function () {
     var sequencer = mark2.new();
