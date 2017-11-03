@@ -18,7 +18,7 @@ var sequencer = Mark2.new({
 });
 ```
 
-### Quntized Sequencer
+### Quantized Sequencer
 A quantized sequencer simply counts from 0 to the length of events.
 ```javascript
 var sequencer = Mark2.new({
@@ -27,7 +27,7 @@ var sequencer = Mark2.new({
 });
 ```
 
-### Adding an Event to a Sequencer and playing
+### Adding an Event to a Sequencer
 By default, event derives its end and fps from the sequencer. However, individual events can have its own end, fps, and easing type.
 
 ```javascript
@@ -40,10 +40,11 @@ sequencer.add({
     * If this is a variable sequence, events will count until given end     
     * by given easing type. When progress reaches to 100, it will move on
     * to next event
-    */
-    // {...end: 100, progress: 0}
-    // {...end: 100, progress: 1}
-    // {...end: 100, progress: 2}    
+    *
+    * {...end: 100, progress: 0}
+    * {...end: 100, progress: 1}
+    * {...end: 100, progress: 2}
+    */    
   }
 });
 
@@ -55,16 +56,15 @@ sequencer.add({
     ...
   }
 });
-
-sequencer.play();
 ```
 
 ### Controlling a Sequencer
 ```javascript
+sequencer.play();
 sequencer.pause();
 sequencer.stop();
 sequencer.reset();
-sequencer.roll(true); // By Rolling, a sequencer continues playing but does not proceed to the next event.
+sequencer.roll(true); // By rolling, the sequencer continues to count but does not proceed to the next event.
 sequencer.roll(false);
 ```
 
