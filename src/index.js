@@ -1,5 +1,5 @@
 /**
-* @author  Min Nam https://github.com/MINNAM/Mark2
+* @author Min Nam https://github.com/MINNAM/Mark2
 * @namespace
 */
 const Mark2 = function () {
