@@ -1,4 +1,5 @@
 # Mark2
+[![Travis](https://img.shields.io/travis/minnam/mark2.svg?style=flat-square)](https://travis-ci.org/minnam/mark2)
 
 ## Creating a Sequencer
 

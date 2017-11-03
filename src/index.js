@@ -2,7 +2,7 @@
 * @author  Min Nam https://github.com/MINNAM/Mark2
 * @namespace
 */
-var Mark2 = function () {
+const Mark2 = function () {
 
 	if (typeof(window) == 'undefined') {
 	  window = {}
@@ -143,9 +143,9 @@ var Mark2 = function () {
 	*	Event's postion will be incremented or decremented while executing it's callback function
 	*	untill it reaches to end.
 	*
-	* 	@constructor
-	* 	@param param
-	* 	@param {int} param.index
+	* @constructor
+	* @param param
+	* @param {int} param.index
 	*	@param {int} param.start
 	*	@param {int} param.end
 	*	@param {int} param.fps
