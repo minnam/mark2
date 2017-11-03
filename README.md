@@ -27,37 +27,40 @@ var sequencer = Mark2.new({
 });
 ```
 
-### Adding an Event to a Sequncer
+### Adding an Event to a Sequencer and playing
 By default, event derives its end and fps from the sequencer. However, individual events can have its own end, fps, and easing type.
 
 ```javascript
+/* Event 1 */
 sequencer.add({
+  end: 100,
+  ease : 'linear', // default
   execute : function (event) {
-    // Event 1
+    /*
+    * If this is a variable sequence, events will count until given end     
+    * by given easing type. When progress reaches to 100, it will move on
+    * to next event
+    */
+    // {...end: 100, progress: 0}
+    // {...end: 100, progress: 1}
+    // {...end: 100, progress: 2}    
   }
 });
 
+/* Event 2 */
 sequencer.add({
   ease : 'quadratic',
-  execute : function (event) {
-    // Event 2
-  }
-});
-
-sequencer.add({
-  ease : 'cubic',
   end: 100,
-  fps: 30,
-  execute: function (event) {
-    // Event 3
+  execute : function (event) {
+    ...
   }
 });
 
+sequencer.play();
 ```
 
 ### Controlling a Sequencer
 ```javascript
-sequencer.play();
 sequencer.pause();
 sequencer.stop();
 sequencer.reset();

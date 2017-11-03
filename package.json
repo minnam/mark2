@@ -11,7 +11,7 @@
     "build:main": "babel --copy-files --out-dir dist --ignore *.spec.js src",
     "build:umd": "webpack --output-filename mark2.js",
     "build:umd.min": "webpack --output-filename mark2.min.js -p",
-    "check-coverage": "nyc check-coverage --statements 50 --branches 40 --functions 50 --lines 50",
+    "check-coverage": "nyc check-coverage --statements 50 --branches 40 --functions 40 --lines 50",
     "commit": "git-cz",
     "cover": "nyc npm t",
     "dev": "webpack-dev-server --port 3000 --devtool eval --progress --colors --hot --content-base dist",

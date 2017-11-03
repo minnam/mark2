@@ -102,6 +102,7 @@
         ease : 'quadratic',
         execute : function (event) {
             path[0].style.strokeDashoffset = Math.floor(length[0] * (1 - event.progress));
+            console.log(event);
         }
     });
 
