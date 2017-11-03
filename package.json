@@ -82,6 +82,5 @@
       "es2015",
       "stage-2"
     ]
-  },
-  "dependencies": {}
+  }
 }

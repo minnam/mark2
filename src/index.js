@@ -13,11 +13,12 @@ const Mark2 = function () {
 		/**
 		 * Create a new Sequencer
 		 *
-		 * @param {string} group
-		 * @param {string} type 'variable' or 'quantized'
-		 * @param {boolean} loop
-		 * @param {int} fps Frames per second
-		 * @param {int} end Count length between Events. Only applies to VariableSequencer
+		 * @param {object} param
+		 * @param {string} param.group
+		 * @param {string} param.type 'variable' or 'quantized'
+		 * @param {boolean} param.loop
+		 * @param {int} param.fps Frames per second
+		 * @param {int} param.end Count length between Events. Only applies to VariableSequencer
 		 * @return {Mark2.Sequencer}
 		 * @memberOf Mark2#
 		 *
@@ -323,7 +324,7 @@ const Mark2 = function () {
 			this.loop(param.loop ? param.loop : true);
 			this.playhead(0);
 			this.end(param.end);
-			this.fps(param.fps);
+			this.fps(param.fps ? param.fps : 20);
 			this.default(param.default ? param.default : function () {});
 
 			return Sequencer;
@@ -610,4 +611,4 @@ const Mark2 = function () {
 	return Mark2;
 }();
 
-export default Mark2;
+module.exports = Mark2;

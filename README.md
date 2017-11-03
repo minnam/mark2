@@ -1,5 +1,7 @@
-# Mark2
 [![Travis](https://img.shields.io/travis/minnam/mark2.svg?style=flat-square)](https://travis-ci.org/minnam/mark2)
+# Mark2
+
+Mark2 derives from sequencer in electronic music. It is useful when you need to sequence events, possibly looped, and handling numerous of individual sequences at the same time.
 
 ## Creating a Sequencer
 
