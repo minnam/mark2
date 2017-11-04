@@ -28,12 +28,12 @@
     "url": "https://github.com/minnam/mark2.git"
   },
   "keywords": [
-    "sequencer",
-    "sequence",
     "animation",
     "event",
-    "scheduling",
     "music",
+    "scheduling",
+    "sequence",
+    "sequencer",
     "timing"
   ],
   "files": [
