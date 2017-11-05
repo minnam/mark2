@@ -103,6 +103,25 @@ const Mark2 = function () {
 		},
 
 		/**
+		 * Roll all Sequencer or a group of Sequnecers
+		 * @param {string} a A name of group
+		 * @memberof! Mark2#
+		 */
+		roll: function (a) {
+			if (a !== undefined) {
+				group[a].map(function(seq) {
+					seq.roll(true);
+				});
+			} else {
+				for (var key in group) {
+					group[key].map(function(seq) {
+						seq.roll(false);
+					});
+				}
+			}
+		},
+
+		/**
 		 * Stop all Sequencer or a group of Sequnecers
 		 * @param {string} a A name of group
 		 * @memberof! Mark2#
