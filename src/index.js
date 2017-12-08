@@ -2,7 +2,7 @@
 * @author Min Nam https://github.com/MINNAM/Mark2
 * @namespace
 */
-const Mark2 = function () {
+var Mark2 = function () {
 
 	if (typeof(window) == 'undefined') {
 	  window = {}
